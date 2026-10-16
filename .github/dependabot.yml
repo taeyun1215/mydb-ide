@@ -1,15 +1,22 @@
 version: 2
 updates:
+  # Gradle builds only the tests. Runtime libraries (JDBC drivers, sshj, POI, Kotlin) must match the
+  # versions in the product build (src/product), so they are updated by hand together with it.
   - package-ecosystem: gradle
     directory: /src
     schedule:
       interval: weekly
+    allow:
+      - dependency-name: "org.testcontainers:*"
+      - dependency-name: "org.junit*"
+      - dependency-name: "junit:junit"
     groups:
-      jdbc-drivers:
-        patterns: ["org.postgresql:*", "org.xerial:*", "org.mariadb.jdbc:*"]
       testing:
-        patterns: ["org.testcontainers:*", "org.junit*", "junit:*"]
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
