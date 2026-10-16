@@ -21,7 +21,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - name: Run tests
         run: src/scripts-test.sh
       - name: Upload test reports
@@ -41,7 +41,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - name: Run tests
         run: xvfb-run --auto-servernum src/plugin-test.sh
       - name: Upload test reports
