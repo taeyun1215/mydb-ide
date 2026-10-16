@@ -1,0 +1,333 @@
+<idea-plugin>
+  <id>dev.teo.mydb</id>
+  <name>MyDB</name>
+  <vendor>teo</vendor>
+  <description>Database tools: data sources, SQL editor, results grid, schema tools.</description>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>intellij.grid.core.plugin</depends>
+  <resource-bundle>messages.MyDbBundle</resource-bundle>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <notificationGroup id="MyDB" displayType="BALLOON"/>
+    <applicationConfigurable parentId="tools" id="mydb.ssh.configurations" displayName="SSH Configurations"
+                             instance="dev.teo.mydb.plugin.datasource.SshConfigurationsConfigurable"/>
+    <applicationConfigurable id="mydb.database" displayName="Database" instance="dev.teo.mydb.plugin.settings.DatabaseConfigurable"/>
+    <applicationConfigurable parentId="mydb.database" id="mydb.database.execution" displayName="Query Execution"
+                             instance="dev.teo.mydb.plugin.settings.QueryExecutionConfigurable"/>
+    <applicationConfigurable parentId="mydb.database" id="mydb.database.editor" displayName="Data Editor and Viewer"
+                             instance="dev.teo.mydb.plugin.settings.DataEditorConfigurable"/>
+    <applicationConfigurable parentId="mydb.database" id="mydb.database.csv" displayName="CSV Formats"
+                             instance="dev.teo.mydb.plugin.settings.CsvFormatsConfigurable"/>
+    <projectConfigurable parentId="mydb.database" id="mydb.database.scopes" displayName="SQL Resolution Scopes"
+                         instance="dev.teo.mydb.plugin.settings.ResolutionScopesConfigurable"/>
+    <applicationConfigurable parentId="mydb.database" id="mydb.database.explorer" displayName="Database Explorer"
+                             instance="dev.teo.mydb.plugin.settings.ExplorerConfigurable"/>
+    <applicationConfigurable parentId="mydb.database" id="mydb.database.consoles" displayName="Query Files and Consoles"
+                             instance="dev.teo.mydb.plugin.settings.ConsolesConfigurable"/>
+    <applicationConfigurable parentId="mydb.database" id="mydb.database.other" displayName="Other"
+                             instance="dev.teo.mydb.plugin.settings.OtherConfigurable"/>
+    <toolWindow id="MyDB Explorer" anchor="left" icon="AllIcons.Nodes.DataTables"
+                factoryClass="dev.teo.mydb.plugin.explorer.DatabaseExplorerFactory"/>
+    <toolWindow id="MyDB SQL Generator" anchor="bottom" icon="AllIcons.Actions.Lightning" doNotActivateOnStart="true"
+                factoryClass="dev.teo.mydb.plugin.generator.SqlGeneratorToolWindowFactory"/>
+    <toolWindow id="MyDB Services" anchor="bottom" icon="AllIcons.Nodes.Console"
+                factoryClass="dev.teo.mydb.plugin.console.ResultsToolWindowFactory"/>
+    <fileEditorProvider implementation="dev.teo.mydb.plugin.table.TableEditorProvider"/>
+    <fileEditorProvider implementation="dev.teo.mydb.plugin.diagram.DiagramEditorProvider"/>
+
+    <fileType name="MyDB SQL" implementationClass="dev.teo.mydb.plugin.sql.SqlFileType" fieldName="INSTANCE"
+              language="MyDbSql" extensions="sql"/>
+    <lang.parserDefinition language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.SqlParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.SqlSyntaxHighlighterFactory"/>
+    <lang.commenter language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.SqlCommenter"/>
+    <lang.braceMatcher language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.SqlBraceMatcher"/>
+    <completion.contributor language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.SqlCompletionContributor"/>
+    <lang.formatter language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.format.SqlFormattingModelBuilder"/>
+    <localInspection language="MyDbSql" shortName="MyDbMissingWhere" displayName="DELETE or UPDATE without WHERE"
+                     groupName="SQL" enabledByDefault="true" level="WARNING"
+                     implementationClass="dev.teo.mydb.plugin.sql.inspections.SqlMissingWhereInspection"/>
+    <localInspection language="MyDbSql" shortName="MyDbNonAggregatedColumn" displayName="Column not in GROUP BY"
+                     groupName="SQL" enabledByDefault="true" level="WARNING"
+                     implementationClass="dev.teo.mydb.plugin.sql.inspections.SqlNonAggregatedColumnInspection"/>
+    <codeInsight.declarativeInlayProvider language="MyDbSql" providerId="mydb.join.cardinality" isEnabledByDefault="true"
+                     group="OTHER_GROUP" nameKey="hints.join.cardinality" bundle="messages.MyDbBundle"
+                     implementationClass="dev.teo.mydb.plugin.sql.hints.JoinCardinalityHintsProvider"/>
+    <annotator language="MyDbSql" implementationClass="dev.teo.mydb.plugin.sql.SqlAnnotator"/>
+    <lang.refactoringSupport language="MyDbSql" implementationClass="dev.teo.mydb.plugin.refactoring.SqlRefactoringSupportProvider"/>
+    <fileEditorProvider implementation="dev.teo.mydb.plugin.grid.ChartEditorProvider"/>
+    <fileEditorProvider implementation="dev.teo.mydb.plugin.table.CsvTableEditorProvider"/>
+    <configurationType implementation="dev.teo.mydb.plugin.console.SqlScriptConfigurationType"/>
+    <runConfigurationProducer implementation="dev.teo.mydb.plugin.console.SqlScriptRunConfigurationProducer"/>
+    <gotoSymbolContributor implementation="dev.teo.mydb.plugin.explorer.DbSymbolContributor"/>
+    <editorTabTitleProvider implementation="dev.teo.mydb.plugin.console.ConsoleTabTitleProvider"/>
+    <editorTabColorProvider implementation="dev.teo.mydb.plugin.explorer.DataSourceTabColorProvider"/>
+    <lang.documentationProvider language="MyDbSql" implementationClass="dev.teo.mydb.plugin.explorer.SqlDocumentationProvider"/>
+    <lang.namesValidator language="MyDbSql" implementationClass="dev.teo.mydb.plugin.refactoring.SqlNamesValidator"/>
+    <renameHandler implementation="dev.teo.mydb.plugin.refactoring.DbObjectRenameHandler"/>
+    <editorNotificationProvider implementation="dev.teo.mydb.plugin.console.ConsoleToolbarProvider"/>
+    <nonProjectFileWritingAccessExtension implementation="dev.teo.mydb.plugin.console.ConsoleWritingAccess"/>
+    <actionPromoter implementation="dev.teo.mydb.plugin.console.ExecutePromoter"/>
+    <readerModeMatcher implementation="dev.teo.mydb.plugin.console.SqlReaderModeMatcher"/>
+
+    <intentionAction>
+      <language>MyDbSql</language>
+      <className>dev.teo.mydb.plugin.sql.fixes.QualifyIdentifierIntention</className>
+      <category>SQL</category>
+    </intentionAction>
+    <intentionAction>
+      <language>MyDbSql</language>
+      <className>dev.teo.mydb.plugin.sql.fixes.UnqualifyIdentifierIntention</className>
+      <category>SQL</category>
+    </intentionAction>
+    <intentionAction>
+      <language>MyDbSql</language>
+      <className>dev.teo.mydb.plugin.sql.fixes.QuoteIdentifierIntention</className>
+      <category>SQL</category>
+    </intentionAction>
+    <intentionAction>
+      <language>MyDbSql</language>
+      <className>dev.teo.mydb.plugin.sql.fixes.FlipJoinIntention</className>
+      <category>SQL</category>
+    </intentionAction>
+    <intentionAction>
+      <language>MyDbSql</language>
+      <className>dev.teo.mydb.plugin.sql.fixes.WrapInSubqueryIntention</className>
+      <category>SQL</category>
+    </intentionAction>
+  </extensions>
+  <actions>
+    <action id="MyDb.Execute" class="dev.teo.mydb.plugin.console.ExecuteAction" text="Execute" icon="AllIcons.Actions.Execute"
+            description="Run the statement at the caret">
+      <keyboard-shortcut keymap="$default" first-keystroke="control ENTER"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta ENTER" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta ENTER" replace-all="true"/>
+    </action>
+    <action id="MyDb.Explain" class="dev.teo.mydb.plugin.console.ExplainAction" text="Explain Plan" icon="AllIcons.Actions.Preview"/>
+    <action id="MyDb.History" class="dev.teo.mydb.plugin.console.ShowHistoryAction" text="Query History" icon="AllIcons.Vcs.History">
+      <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta alt E" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta alt E" replace-all="true"/>
+    </action>
+    <action id="MyDb.TxMode" class="dev.teo.mydb.plugin.console.TxModeComboAction" text="Transaction Mode"
+            description="Transaction mode and isolation of this console"/>
+    <action id="MyDb.Commit" class="dev.teo.mydb.plugin.console.CommitAction" text="Commit" icon="AllIcons.Actions.Commit"/>
+    <action id="MyDb.Rollback" class="dev.teo.mydb.plugin.console.RollbackAction" text="Rollback" icon="AllIcons.Actions.Rollback"/>
+    <action id="MyDb.DataSources" class="dev.teo.mydb.plugin.console.DataSourcesDialogAction" text="Data Sources…"
+            icon="AllIcons.General.Settings">
+      <keyboard-shortcut keymap="$default" first-keystroke="shift control alt S"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta SEMICOLON" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta SEMICOLON" replace-all="true"/>
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
+
+    <group id="MyDb.Editor.Toolbar">
+      <reference ref="MyDb.Execute"/>
+      <reference ref="MyDb.Explain"/>
+      <reference ref="MyDb.History"/>
+      <separator/>
+      <reference ref="MyDb.TxMode"/>
+      <reference ref="MyDb.Commit"/>
+      <reference ref="MyDb.Rollback"/>
+    </group>
+    <group id="MyDb.Editor.Popup">
+      <reference ref="MyDb.Execute"/>
+      <reference ref="MyDb.Explain"/>
+      <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+    </group>
+
+    <action id="MyDb.ImportIdeDataSources" class="dev.teo.mydb.plugin.datasource.ImportIdeDataSourcesAction" text="Import Data Sources from IDE Project…" icon="AllIcons.ToolbarDecorator.Import"/>
+    <action id="MyDb.AddDataSource" class="dev.teo.mydb.plugin.explorer.AddDataSourceAction" text="New Data Source…" icon="AllIcons.General.Add"/>
+    <action id="MyDb.AddVirtualFk" class="dev.teo.mydb.plugin.explorer.AddVirtualForeignKeyAction" text="Add Virtual Foreign Key…"/>
+    <action id="MyDb.RemoveVirtualFk" class="dev.teo.mydb.plugin.explorer.RemoveVirtualForeignKeyAction" text="Remove Virtual Foreign Key"/>
+    <action id="MyDb.CopyDataSource" class="dev.teo.mydb.plugin.datasource.CopyDataSourceAction" text="Copy Data Source"/>
+    <action id="MyDb.PasteDataSource" class="dev.teo.mydb.plugin.datasource.PasteDataSourceAction" text="Paste Data Source"/>
+    <action id="MyDb.ChooseSchemas" class="dev.teo.mydb.plugin.explorer.ChooseSchemasAction" text="Schemas…" description="Choose the schemas to introspect"/>
+    <action id="MyDb.Properties" class="dev.teo.mydb.plugin.explorer.DataSourcePropertiesAction" text="Properties…" icon="AllIcons.Actions.Properties"/>
+    <action id="MyDb.Refresh" class="dev.teo.mydb.plugin.explorer.RefreshAction" text="Refresh" icon="AllIcons.Actions.Refresh">
+      <keyboard-shortcut keymap="$default" first-keystroke="control R"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta R" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta R" replace-all="true"/>
+    </action>
+    <action id="MyDb.Disconnect" class="dev.teo.mydb.plugin.explorer.DisconnectAction" text="Disconnect" icon="AllIcons.Actions.Suspend"/>
+    <action id="MyDb.OpenConsole" class="dev.teo.mydb.plugin.explorer.OpenConsoleAction" text="Query Console" icon="AllIcons.Nodes.Console"/>
+    <action id="MyDb.NewConsole" class="dev.teo.mydb.plugin.explorer.NewConsoleAction" text="New Query Console">
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta L" replace-all="true"/>
+    </action>
+    <action id="MyDb.EditData" class="dev.teo.mydb.plugin.explorer.EditDataAction" text="Edit Data" icon="AllIcons.Actions.Edit">
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta DOWN" replace-all="true"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="F4"/>
+    </action>
+    <action id="MyDb.GoToDdl" class="dev.teo.mydb.plugin.explorer.GoToDdlAction" text="Go to DDL" icon="AllIcons.FileTypes.Text">
+      <keyboard-shortcut keymap="$default" first-keystroke="control B"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta B" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta B" replace-all="true"/>
+    </action>
+    <action id="MyDb.CopyDdl" class="dev.teo.mydb.plugin.explorer.CopyDdlAction" text="Copy DDL to Clipboard">
+      <keyboard-shortcut keymap="$default" first-keystroke="alt shift control G"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="alt shift meta G" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="alt shift meta G" replace-all="true"/>
+    </action>
+    <action id="MyDb.DdlToConsole" class="dev.teo.mydb.plugin.explorer.DdlToConsoleAction" text="DDL to Query Console">
+      <keyboard-shortcut keymap="$default" first-keystroke="alt shift control B"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="alt shift meta B" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="alt shift meta B" replace-all="true"/>
+    </action>
+    <action id="MyDb.CopyReference" class="dev.teo.mydb.plugin.explorer.CopyReferenceAction" text="Copy Reference">
+      <keyboard-shortcut keymap="$default" first-keystroke="shift alt meta C"/>
+    </action>
+    <action id="MyDb.DataSourceColor" class="dev.teo.mydb.plugin.explorer.DataSourceColorAction" text="Color…"/>
+    <action id="MyDb.DeleteDataSource" class="dev.teo.mydb.plugin.explorer.DeleteDataSourceAction" text="Remove Data Source" icon="AllIcons.General.Remove"/>
+
+    <action id="MyDb.ExportTable" class="dev.teo.mydb.plugin.transfer.ExportTableAction" text="Export Data to File…" icon="AllIcons.ToolbarDecorator.Export"/>
+    <action id="MyDb.DumpToDdl" class="dev.teo.mydb.plugin.transfer.DumpToDdlDataSourceAction" text="Dump to DDL Data Source…"/>
+    <action id="MyDb.PgDump" class="dev.teo.mydb.plugin.transfer.PgDumpAction" text="Export with pg_dump…"/>
+    <action id="MyDb.PgRestore" class="dev.teo.mydb.plugin.transfer.PgRestoreAction" text="Restore with pg_restore or psql…"/>
+    <action id="MyDb.ImportData" class="dev.teo.mydb.plugin.transfer.ImportDataAction" text="Import Data from File…" icon="AllIcons.ToolbarDecorator.Import"/>
+    <action id="MyDb.ShowChart" class="dev.teo.mydb.plugin.grid.ShowChartAction" text="Show Chart" icon="AllIcons.Actions.ShowAsTree"/>
+    <action id="MyDb.CompareGridData" class="dev.teo.mydb.plugin.grid.CompareGridDataAction" text="Compare Data With…" icon="AllIcons.Actions.Diff"/>
+    <action id="MyDb.CompareTableData" class="dev.teo.mydb.plugin.grid.CompareTableDataAction" text="Compare Data" icon="AllIcons.Actions.Diff"/>
+    <action id="MyDb.GridDdl" class="dev.teo.mydb.plugin.grid.ShowGridDdlAction" text="Show DDL" description="Open the DDL of the table behind this grid" icon="AllIcons.FileTypes.Text"/>
+    <action id="MyDb.PreviewGridChanges" class="dev.teo.mydb.plugin.grid.PreviewGridChangesAction" text="Preview Pending Changes" icon="AllIcons.Actions.Show"/>
+    <action id="MyDb.SubmitGridChanges" class="dev.teo.mydb.plugin.grid.SubmitGridChangesAction" text="Submit" icon="AllIcons.Actions.Commit"
+            description="Send pending changes to the database"/>
+    <action id="MyDb.ExportGrid" class="dev.teo.mydb.plugin.transfer.ExportGridAction" text="Export Data…" icon="AllIcons.ToolbarDecorator.Export">
+      <add-to-group group-id="Console.TableResult.PopupGroup" anchor="last"/>
+    </action>
+
+    <action id="MyDb.Compare" class="dev.teo.mydb.plugin.compare.CompareAction" text="Compare Structure…"
+            description="Compare two schemas or tables and generate a migration script" icon="AllIcons.Actions.Diff">
+      <keyboard-shortcut keymap="$default" first-keystroke="control D"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta D" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta D" replace-all="true"/>
+    </action>
+
+    <action id="MyDb.SqlGenerator" class="dev.teo.mydb.plugin.generator.ShowSqlGeneratorAction" text="SQL Generator…">
+      <keyboard-shortcut keymap="$default" first-keystroke="control alt G"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta alt G" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta alt G" replace-all="true"/>
+    </action>
+    <action id="MyDb.NewObject" class="dev.teo.mydb.plugin.objects.NewObjectAction" text="New…" icon="AllIcons.General.Add">
+      <keyboard-shortcut keymap="$default" first-keystroke="control N"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta N" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta N" replace-all="true"/>
+    </action>
+    <action id="MyDb.ModifyTable" class="dev.teo.mydb.plugin.objects.ModifyTableAction" text="Modify Table…" icon="AllIcons.Actions.Edit">
+      <keyboard-shortcut keymap="$default" first-keystroke="control F6"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F6" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta F6" replace-all="true"/>
+    </action>
+
+    <group id="MyDb.Diagrams" text="Diagrams" popup="true">
+      <action id="MyDb.ShowDiagram" class="dev.teo.mydb.plugin.diagram.ShowDiagramAction" text="Show Diagram" icon="AllIcons.FileTypes.Diagram">
+        <keyboard-shortcut keymap="$default" first-keystroke="shift control alt U"/>
+        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta alt U" replace-all="true"/>
+        <keyboard-shortcut keymap="Mac OS X" first-keystroke="shift meta alt U" replace-all="true"/>
+      </action>
+      <action id="MyDb.ShowDiagramPopup" class="dev.teo.mydb.plugin.diagram.ShowDiagramPopupAction" text="Show Diagram Popup">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
+        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta alt U" replace-all="true"/>
+        <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta alt U" replace-all="true"/>
+      </action>
+    </group>
+
+    <group id="MyDb.Explorer.Toolbar">
+      <reference ref="MyDb.AddDataSource"/>
+      <reference ref="MyDb.ImportIdeDataSources"/>
+      <reference ref="MyDb.Properties"/>
+      <separator/>
+      <reference ref="MyDb.Refresh"/>
+      <reference ref="MyDb.Disconnect"/>
+      <separator/>
+      <reference ref="MyDb.OpenConsole"/>
+      <reference ref="MyDb.EditData"/>
+      <reference ref="MyDb.GoToDdl"/>
+      <separator/>
+      <action id="MyDb.ExplorerFilter" class="dev.teo.mydb.plugin.explorer.ExplorerFilterAction" text="Filter" description="Show only objects whose names match" icon="AllIcons.General.Filter"/>
+    </group>
+    <action id="MyDb.Rename" class="dev.teo.mydb.plugin.explorer.RenameObjectAction" text="Rename…">
+      <keyboard-shortcut keymap="$default" first-keystroke="shift F6"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift F6" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="shift F6" replace-all="true"/>
+    </action>
+    <action id="MyDb.QuickDoc" class="dev.teo.mydb.plugin.explorer.QuickDocAction" text="Quick Documentation">
+      <keyboard-shortcut keymap="$default" first-keystroke="control Q"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="F1" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="F1" replace-all="true"/>
+    </action>
+    <action id="MyDb.FindUsages" class="dev.teo.mydb.plugin.explorer.FindUsagesAction" text="Find Usages" icon="AllIcons.Actions.Find">
+      <keyboard-shortcut keymap="$default" first-keystroke="alt F7"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="alt F7" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="alt F7" replace-all="true"/>
+    </action>
+    <action id="MyDb.JumpToConsole" class="dev.teo.mydb.plugin.explorer.JumpToConsoleAction" text="Jump to Query Console" icon="AllIcons.Nodes.Console">
+      <keyboard-shortcut keymap="$default" first-keystroke="shift control F10"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F10" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="shift meta F10" replace-all="true"/>
+    </action>
+    <action id="MyDb.Template.Select" class="dev.teo.mydb.plugin.explorer.SelectTemplateAction" text="SELECT Statement"/>
+    <action id="MyDb.Template.Insert" class="dev.teo.mydb.plugin.explorer.InsertTemplateAction" text="INSERT Statement"/>
+    <action id="MyDb.Template.Update" class="dev.teo.mydb.plugin.explorer.UpdateTemplateAction" text="UPDATE Statement"/>
+    <action id="MyDb.Template.Delete" class="dev.teo.mydb.plugin.explorer.DeleteTemplateAction" text="DELETE Statement"/>
+    <action id="MyDb.Truncate" class="dev.teo.mydb.plugin.explorer.TruncateTableAction" text="Truncate…"/>
+    <action id="MyDb.Drop" class="dev.teo.mydb.plugin.explorer.DropObjectAction" text="Delete…" icon="AllIcons.Actions.GC">
+      <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="DELETE" replace-all="true"/>
+      <keyboard-shortcut keymap="Mac OS X" first-keystroke="DELETE" replace-all="true"/>
+    </action>
+
+    <!-- table context menu, in the order of -->
+    <group id="MyDb.Explorer.Popup">
+      <reference ref="MyDb.NewObject"/>
+      <reference ref="MyDb.NewConsole"/>
+      <reference ref="MyDb.ModifyTable"/>
+      <separator/>
+      <reference ref="MyDb.EditData"/>
+      <reference ref="MyDb.Refresh"/>
+      <reference ref="MyDb.Rename"/>
+      <reference ref="MyDb.QuickDoc"/>
+      <reference ref="MyDb.Compare"/>
+      <reference ref="MyDb.CompareTableData"/>
+      <group id="MyDb.Explorer.Navigation" text="Navigation" popup="true">
+        <reference ref="MyDb.GoToDdl"/>
+        <reference ref="MyDb.JumpToConsole"/>
+      </group>
+      <reference ref="MyDb.FindUsages"/>
+      <reference ref="MyDb.CopyReference"/>
+      <reference ref="MyDb.CopyDataSource"/>
+      <reference ref="MyDb.PasteDataSource"/>
+      <separator/>
+      <group id="MyDb.Explorer.SqlScripts" text="SQL Scripts" popup="true">
+        <reference ref="MyDb.SqlGenerator"/>
+        <reference ref="MyDb.CopyDdl"/>
+        <reference ref="MyDb.DdlToConsole"/>
+        <separator/>
+        <reference ref="MyDb.Template.Select"/>
+        <reference ref="MyDb.Template.Insert"/>
+        <reference ref="MyDb.Template.Update"/>
+        <reference ref="MyDb.Template.Delete"/>
+      </group>
+      <group id="MyDb.Explorer.ObjectActions" text="Object Actions" popup="true">
+        <reference ref="MyDb.AddVirtualFk"/>
+        <reference ref="MyDb.RemoveVirtualFk"/>
+        <reference ref="MyDb.Truncate"/>
+      </group>
+      <group id="MyDb.Explorer.ImportExport" text="Import/Export" popup="true">
+        <reference ref="MyDb.ExportTable"/>
+        <reference ref="MyDb.ImportData"/>
+        <separator/>
+        <reference ref="MyDb.PgDump"/>
+        <reference ref="MyDb.PgRestore"/>
+        <reference ref="MyDb.DumpToDdl"/>
+      </group>
+      <reference ref="MyDb.Diagrams"/>
+      <separator/>
+      <reference ref="MyDb.ChooseSchemas"/>
+      <reference ref="MyDb.DataSourceColor"/>
+      <reference ref="MyDb.Properties"/>
+      <reference ref="MyDb.Disconnect"/>
+      <reference ref="MyDb.DeleteDataSource"/>
+      <reference ref="MyDb.Drop"/>
+    </group>
+  </actions>
+</idea-plugin>

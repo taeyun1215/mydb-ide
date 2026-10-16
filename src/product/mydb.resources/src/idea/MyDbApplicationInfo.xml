@@ -1,0 +1,13 @@
+<!-- MyDB IDE: a database IDE. -->
+<component xmlns="http://jetbrains.org/intellij/schema/application-info">
+  <version major="2026" minor="2.3" eap="false"/>
+  <company name="teo" url="https://github.com/" copyrightStart="2026"/>
+  <build number="MD-__BUILD__" date="__BUILD_DATE__" majorReleaseDate="20261015"/>
+  <logo url="/mydb_logo.png"/>
+  <icon svg="/mydb.svg" svg-small="/mydb_16.svg"/>
+  <names product="MyDB" fullname="MyDB IDE" script="mydb" motto="Personal database IDE"/>
+
+  <essential-plugin>dev.teo.mydb</essential-plugin>
+  <essential-plugin>intellij.grid.core.plugin</essential-plugin>
+  <essential-plugin>com.intellij.modules.json</essential-plugin>
+</component>

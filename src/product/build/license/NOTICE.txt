@@ -1,0 +1,17 @@
+MyDB IDE
+Copyright 2026 the MyDB IDE authors
+
+This product is built on the IntelliJ Platform Community Edition
+(https://github.com/JetBrains/intellij-community), Copyright 2000-2026 JetBrains s.r.o.,
+licensed under the Apache License, Version 2.0. A patch to that source tree is included in
+src/product/patches/. IntelliJ is a trademark of JetBrains s.r.o.; this product is not affiliated
+with or endorsed by JetBrains.
+
+Bundled third-party libraries used by MyDB modules:
+- PostgreSQL JDBC Driver - BSD 2-Clause License
+- MariaDB Connector/J - GNU Lesser General Public License 2.1 (shipped unmodified as a separate jar;
+  source: https://github.com/mariadb-corporation/mariadb-connector-j)
+- Apache POI, Apache XMLBeans, Apache Commons Collections 4, Apache Log4j API, SparseBitSet - Apache License 2.0
+- curvesapi - BSD 3-Clause License
+
+The licenses of all libraries in a distribution are listed in its license/ directory.

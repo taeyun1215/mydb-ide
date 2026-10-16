@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/taeyun1215/mydb-ide/discussions
+    about: Ask how to do something or share an idea before opening an issue
+  - name: Security vulnerability
+    url: https://github.com/taeyun1215/mydb-ide/security/advisories/new
+    about: Report security issues privately, not as a public issue

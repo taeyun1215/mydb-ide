@@ -1,0 +1,1 @@
+select * from <spot>a join b</spot> on a.id = b.a_id;

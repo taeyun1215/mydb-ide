@@ -1,0 +1,15 @@
+<!-- Product descriptor of MyDB IDE (platform prefix "MyDb"); mirrors MyDbProperties.getProductContentDescriptor. -->
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+  <module value="com.intellij.modules.mydb"/>
+  <module value="com.intellij.platform.ide.provisioner"/>
+
+  <xi:include href="/META-INF/PlatformLangPlugin.xml"/>
+  <xi:include href="/META-INF/intellij.moduleSets.ide.common.xml"/>
+  <xi:include href="/META-INF/intellij.moduleSets.rd.common.xml"/>
+  <content namespace="jetbrains">
+    <module name="intellij.platform.ide.newUiOnboarding"/>
+    <module name="intellij.ide.startup.importSettings"/>
+    <module name="intellij.platform.tips"/>
+    <module name="intellij.platform.remoteServers.impl" loading="embedded"/>
+  </content>
+</idea-plugin>

@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /src
+    schedule:
+      interval: weekly
+    groups:
+      jdbc-drivers:
+        patterns: ["org.postgresql:*", "org.xerial:*", "org.mariadb.jdbc:*"]
+      testing:
+        patterns: ["org.testcontainers:*", "org.junit*", "junit:*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

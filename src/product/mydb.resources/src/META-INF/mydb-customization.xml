@@ -1,0 +1,27 @@
+<!-- Product-level customization of MyDB IDE, included from MyDbProperties.getProductContentDescriptor. -->
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceInterface="com.intellij.platform.ide.customization.ExternalProductResourceUrls"
+                        serviceImplementation="dev.teo.mydb.customization.MyDbExternalResourceUrls"
+                        overrides="true"/>
+    <projectViewPane implementation="com.intellij.ide.projectView.impl.ProjectViewPane"/>
+    <editorEmptyTextProvider implementation="dev.teo.mydb.customization.MyDbEditorEmptyText" order="first"/>
+    <actionConfigurationCustomizer implementation="dev.teo.mydb.customization.MyDbActionRemover"/>
+    <defaultToolWindowLayout implementation="dev.teo.mydb.customization.MyDbToolWindowLayout" order="last"/>
+  </extensions>
+
+  <applicationListeners>
+    <listener class="dev.teo.mydb.customization.MyDbStandaloneSetup" topic="com.intellij.ide.AppLifecycleListener"/>
+  </applicationListeners>
+
+  <actions>
+    <action id="MyDb.NewProject" class="dev.teo.mydb.customization.MyDbNewProjectAction" text="New Project…"
+            description="Create an empty project for consoles, scripts and data sources" icon="AllIcons.Welcome.CreateNewProjectTab">
+      <add-to-group group-id="WelcomeScreen.QuickStart" anchor="before" relative-to-action="Vcs.VcsClone"/>
+      <add-to-group group-id="FileOpenGroup" anchor="first"/>
+    </action>
+    <action id="WelcomeScreen.OpenProject" class="com.intellij.ide.actions.OpenFileAction$OnWelcomeScreen">
+      <add-to-group group-id="WelcomeScreen.QuickStart" anchor="after" relative-to-action="MyDb.NewProject"/>
+    </action>
+  </actions>
+</idea-plugin>

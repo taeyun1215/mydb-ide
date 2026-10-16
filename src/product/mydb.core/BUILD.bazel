@@ -1,0 +1,113 @@
+load("@rules_jvm//:jvm.bzl", "jvm_library")
+load("//build:compiler-options.bzl", "create_kotlinc_options")
+
+### auto-generated section `build mydb.core` start
+
+create_kotlinc_options(
+    name = "custom_core",
+    progressive = False,
+    x_x_language = [],
+)
+
+jvm_library(
+    name = "core",
+    srcs = glob(
+        [
+            "src/**/*.kt",
+            "src/**/*.java",
+            "src/**/*.form",
+        ],
+        allow_empty = True,
+    ),
+    kotlinc_opts = ":custom_core",
+    module_name = "mydb.core",
+    visibility = ["//visibility:public"],
+    exports = [
+        # do not sort,
+        "@lib//:sqlite",
+        "@lib//:mydb-core-mariadb-java-client",
+        "@lib//:mydb-core-postgresql",
+        "@lib//:mydb-core-poi",
+        "@lib//:mydb-core-poi-ooxml",
+        "@lib//:mydb-core-poi-ooxml-lite",
+        "@lib//:mydb-core-xmlbeans",
+        "@lib//:mydb-core-commons-collections4",
+        "@lib//:mydb-core-commons-math3",
+        "@lib//:mydb-core-_sparse_bit_set",
+        "@lib//:mydb-core-curvesapi",
+        "@lib//:mydb-core-log4j-api",
+    ],
+    deps = [
+        # do not sort,
+        "@lib//:kotlin-stdlib",
+        "//libraries/kotlinx/serialization/core",
+        "//libraries/kotlinx/serialization/json",
+        "//libraries/commons/compress",
+        "//libraries/commons/io",
+        "//libraries/commons/codec",
+        "//libraries/commons/lang3",
+        "//libraries/sshj",
+        "//libraries/bouncy-castle-provider",
+        "@lib//:sqlite",
+        "@lib//:mydb-core-mariadb-java-client",
+        "@lib//:mydb-core-postgresql",
+        "@lib//:mydb-core-poi",
+        "@lib//:mydb-core-poi-ooxml",
+        "@lib//:mydb-core-poi-ooxml-lite",
+        "@lib//:mydb-core-xmlbeans",
+        "@lib//:mydb-core-commons-collections4",
+        "@lib//:mydb-core-commons-math3",
+        "@lib//:mydb-core-_sparse_bit_set",
+        "@lib//:mydb-core-curvesapi",
+        "@lib//:mydb-core-log4j-api",
+    ],
+)
+
+jvm_library(
+    name = "core_test_lib",
+    testonly = True,
+    srcs = glob(
+        [],
+        allow_empty = True,
+    ),
+    kotlinc_opts = ":custom_core",
+    module_name = "mydb.core",
+    visibility = ["//visibility:public"],
+    exports = [
+        # do not sort,
+        "@lib//:sqlite",
+        "@lib//:mydb-core-mariadb-java-client",
+        "@lib//:mydb-core-postgresql",
+        "@lib//:mydb-core-poi",
+        "@lib//:mydb-core-poi-ooxml",
+        "@lib//:mydb-core-poi-ooxml-lite",
+        "@lib//:mydb-core-xmlbeans",
+        "@lib//:mydb-core-commons-collections4",
+        "@lib//:mydb-core-commons-math3",
+        "@lib//:mydb-core-_sparse_bit_set",
+        "@lib//:mydb-core-curvesapi",
+        "@lib//:mydb-core-log4j-api",
+    ],
+    runtime_deps = [
+        # do not sort,
+        ":core",
+        "//libraries/kotlinx/serialization/core:core_test_lib",
+        "//libraries/kotlinx/serialization/json:json_test_lib",
+        "//libraries/commons/compress:compress_test_lib",
+        "//libraries/commons/io:io_test_lib",
+        "//libraries/commons/codec:codec_test_lib",
+        "//libraries/commons/lang3:lang3_test_lib",
+        "//libraries/sshj:sshj_test_lib",
+        "//libraries/bouncy-castle-provider:bouncy-castle-provider_test_lib",
+    ],
+)
+### auto-generated section `build mydb.core` end
+
+### auto-generated section `iml mydb.core` start
+exports_files(
+    [
+        "mydb.core.iml",
+    ],
+    visibility = ["//visibility:public"],
+)
+### auto-generated section `iml mydb.core` end

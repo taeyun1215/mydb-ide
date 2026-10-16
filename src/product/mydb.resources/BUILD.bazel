@@ -1,0 +1,79 @@
+load("@rules_jvm//:jvm.bzl", "jvm_library")
+load("//build:compiler-options.bzl", "create_kotlinc_options")
+
+### auto-generated section `build mydb.resources` start
+
+create_kotlinc_options(
+    name = "custom_resources",
+    progressive = False,
+    x_x_language = [],
+)
+
+jvm_library(
+    name = "resources",
+    srcs = glob(
+        [
+            "kotlin/**/*.kt",
+            "kotlin/**/*.java",
+            "kotlin/**/*.form",
+        ],
+        allow_empty = True,
+    ),
+    kotlinc_opts = ":custom_resources",
+    module_name = "mydb.resources",
+    resource_strip_prefix = "src",
+    resources = glob(
+        ["src/**/*"],
+    ),
+    visibility = ["//visibility:public"],
+    deps = [
+        # do not sort,
+        "@lib//:kotlin-stdlib",
+        "//platform/platform-api:ide",
+        "//platform/platform-impl:ide-impl",
+        "//platform/ide-core",
+        "//platform/ide-core-impl",
+        "//platform/core-api:core",
+        "//platform/core-ui",
+        "//platform/util",
+        "//platform/util:util-ui",
+        "//platform/editor-ui-api:editor-ui",
+        "//platform/projectModel-api:projectModel",
+    ],
+)
+
+jvm_library(
+    name = "resources_test_lib",
+    testonly = True,
+    srcs = glob(
+        [],
+        allow_empty = True,
+    ),
+    kotlinc_opts = ":custom_resources",
+    module_name = "mydb.resources",
+    visibility = ["//visibility:public"],
+    runtime_deps = [
+        # do not sort,
+        ":resources",
+        "//platform/platform-api:ide_test_lib",
+        "//platform/platform-impl:ide-impl_test_lib",
+        "//platform/ide-core:ide-core_test_lib",
+        "//platform/ide-core-impl:ide-core-impl_test_lib",
+        "//platform/core-api:core_test_lib",
+        "//platform/core-ui:core-ui_test_lib",
+        "//platform/util:util_test_lib",
+        "//platform/util:util-ui_test_lib",
+        "//platform/editor-ui-api:editor-ui_test_lib",
+        "//platform/projectModel-api:projectModel_test_lib",
+    ],
+)
+### auto-generated section `build mydb.resources` end
+
+### auto-generated section `iml mydb.resources` start
+exports_files(
+    [
+        "mydb.resources.iml",
+    ],
+    visibility = ["//visibility:public"],
+)
+### auto-generated section `iml mydb.resources` end

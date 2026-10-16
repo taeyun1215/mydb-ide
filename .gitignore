@@ -1,0 +1,13 @@
+intellij-community/
+out/
+.gradle/
+.kotlin/
+.intellijPlatform/
+/src/build/
+/src/core/build/
+/src/plugin/build/
+*.log
+.idea/workspace.xml
+*.iml
+!src/product/**/*.iml
+.DS_Store

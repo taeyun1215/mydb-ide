@@ -1,0 +1,75 @@
+load("@jps_dynamic_deps_community//:targets.bzl", "ALL_COMMUNITY_TARGETS", "BAZEL_TARGETS_JSON_COMMUNITY")
+load("@rules_java//java:defs.bzl", "java_binary")
+load("@rules_jvm//:jvm.bzl", "jvm_library")
+load("//build:intellij_dev.bzl", "INTELLIJ_ADD_OPENS")
+
+# MyDB IDE distribution (stage 3): ./build/run_build_target.sh . //mydb/build:i_build_target
+java_binary(
+    name = "i_build_target",
+    add_opens = INTELLIJ_ADD_OPENS,
+    data = ALL_COMMUNITY_TARGETS + [BAZEL_TARGETS_JSON_COMMUNITY],
+    jvm_flags = [
+        "-Dintellij.build.bazel.targets.json.file=$(rlocationpath %s)" % BAZEL_TARGETS_JSON_COMMUNITY,
+    ],
+    main_class = "MyDbInstallersBuildTarget",
+    runtime_deps = [":build"],
+)
+
+### auto-generated section `build mydb.build` start
+
+jvm_library(
+    name = "build",
+    srcs = glob(
+        [
+            "src/**/*.kt",
+            "src/**/*.java",
+            "src/**/*.form",
+        ],
+        allow_empty = True,
+    ),
+    module_name = "mydb.build",
+    visibility = ["//visibility:public"],
+    deps = [
+        # do not sort,
+        "//build",
+        "@lib//:kotlin-stdlib",
+        "//platform/util",
+        "//libraries/kotlinx/collections-immutable:libraries-kotlinx-collections-immutable",
+        "//libraries/kotlinx/coroutines/core",
+        "//platform/build-scripts/downloader",
+        "//platform/build-scripts/licenses",
+        "//platform/ijent/buildConstants",
+    ],
+)
+
+jvm_library(
+    name = "build_test_lib",
+    testonly = True,
+    srcs = glob(
+        [],
+        allow_empty = True,
+    ),
+    module_name = "mydb.build",
+    visibility = ["//visibility:public"],
+    runtime_deps = [
+        # do not sort,
+        ":build",
+        "//build:build_test_lib",
+        "//platform/util:util_test_lib",
+        "//libraries/kotlinx/collections-immutable:libraries-kotlinx-collections-immutable_test_lib",
+        "//libraries/kotlinx/coroutines/core:core_test_lib",
+        "//platform/build-scripts/downloader:downloader_test_lib",
+        "//platform/build-scripts/licenses:licenses_test_lib",
+        "//platform/ijent/buildConstants:buildConstants_test_lib",
+    ],
+)
+### auto-generated section `build mydb.build` end
+
+### auto-generated section `iml mydb.build` start
+exports_files(
+    [
+        "mydb.build.iml",
+    ],
+    visibility = ["//visibility:public"],
+)
+### auto-generated section `iml mydb.build` end
