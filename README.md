@@ -24,6 +24,8 @@
 > [!IMPORTANT]
 > The only official sources of MyDB IDE are this repository and its [Releases](https://github.com/taeyun1215/mydb-ide/releases) page. Builds are not yet signed by Apple or Microsoft, so your OS asks for confirmation the first time; see [Download](#download).
 
+<p align="center"><img src="docs/images/console.png" width="900" alt="MyDB IDE: SQL console with schema-aware completion and the result grid"></p>
+
 ---
 
 ## Contents
@@ -103,6 +105,8 @@ Already have data sources in another IDE project? **Import Data Sources from IDE
 
 ## Features
 
+<p align="center"><img src="docs/images/console-demo.gif" width="760" alt="Typing a join: the ON condition comes from the foreign key"><br><sub>Typing a join: the ON condition comes from the foreign key</sub></p>
+
 <details open>
 <summary><b>🗂️ Database explorer</b></summary>
 
@@ -146,6 +150,9 @@ Already have data sources in another IDE project? **Import Data Sources from IDE
 
 <details>
 <summary><b>🔍 Compare, diagrams and plans</b></summary>
+
+<img src="docs/images/query-plan.png" width="760" alt="EXPLAIN ANALYZE as a tree with every node property">
+
 
 - **Schema compare** of two schemas or data sources: object tree with statuses, side-by-side DDL diff, property diff, and a migration script you can open in a console
 - **ER diagrams** with foreign key and view edges; export to PNG, SVG, Mermaid, PlantUML and GraphML

@@ -24,6 +24,8 @@
 > [!IMPORTANT]
 > MyDB IDE의 공식 배포처는 이 저장소와 [Releases](https://github.com/taeyun1215/mydb-ide/releases) 페이지뿐입니다. 아직 Apple·Microsoft 서명이 없어서 처음 실행할 때 OS가 확인을 요청합니다. [다운로드](#다운로드)를 참고하세요.
 
+<p align="center"><img src="docs/images/console.png" width="900" alt="MyDB IDE: 스키마를 아는 SQL 콘솔과 결과 그리드"></p>
+
 ---
 
 ## 목차
@@ -103,6 +105,8 @@ SSH 터널, 트랜잭션, 스키마 비교, 가져오기·내보내기 등은 **
 
 ## 기능
 
+<p align="center"><img src="docs/images/console-demo.gif" width="760" alt="JOIN을 입력하면 외래 키로 ON 조건을 제안"><br><sub>JOIN을 입력하면 외래 키로 ON 조건을 제안</sub></p>
+
 <details open>
 <summary><b>🗂️ 데이터베이스 탐색기</b></summary>
 
@@ -146,6 +150,9 @@ SSH 터널, 트랜잭션, 스키마 비교, 가져오기·내보내기 등은 **
 
 <details>
 <summary><b>🔍 비교, 다이어그램, 실행 계획</b></summary>
+
+<img src="docs/images/query-plan.png" width="760" alt="EXPLAIN ANALYZE를 노드 속성과 함께 트리로 표시">
+
 
 - 두 스키마나 데이터 소스의 **스키마 비교**: 상태별 객체 트리, DDL 나란히 비교, 속성 비교, 콘솔로 열 수 있는 마이그레이션 스크립트
 - 외래 키와 뷰 관계를 그리는 **ER 다이어그램**, PNG·SVG·Mermaid·PlantUML·GraphML 내보내기
