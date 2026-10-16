@@ -17,7 +17,7 @@
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 ![Databases](https://img.shields.io/badge/PostgreSQL%20%7C%20MySQL%20%7C%20MariaDB%20%7C%20SQLite-336791)
 
-[**Download**](#download) · [**Quick start**](#quick-start) · [**Features**](#features) · [**FAQ**](#faq) · [**Contributing**](CONTRIBUTING.md)
+[**Download**](#download) · [**Quick start**](#quick-start) · [**Features**](#features) · [**User guide**](docs/guide.md) · [**FAQ**](#faq) · [**Contributing**](CONTRIBUTING.md)
 
 </div>
 
@@ -96,6 +96,8 @@ tar -xzf MyDB-IDE-*-linux-*.tar.gz
 3. **Query**: a console opens for the new data source. Type a query, press <kbd>⌘</kbd> <kbd>↵</kbd>, and read the results below.
 4. **Edit data**: select a table and press <kbd>⌘</kbd> <kbd>↓</kbd>. Change cells, add or delete rows, then submit with <kbd>⌘</kbd> <kbd>↵</kbd>.
 5. **Go further**: <kbd>⌘</kbd> <kbd>N</kbd> creates a table, <kbd>⌘</kbd> <kbd>D</kbd> on two schemas compares them, <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>U</kbd> opens an ER diagram.
+
+For SSH tunnels, transactions, schema compare, import/export and more, read the **[User guide](docs/guide.md)**.
 
 Already have data sources in another IDE project? **Import Data Sources from IDE Project…** in the explorer toolbar brings them over with their SSH settings.
 

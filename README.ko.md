@@ -17,7 +17,7 @@
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 ![Databases](https://img.shields.io/badge/PostgreSQL%20%7C%20MySQL%20%7C%20MariaDB%20%7C%20SQLite-336791)
 
-[**다운로드**](#다운로드) · [**빠른 시작**](#빠른-시작) · [**기능**](#기능) · [**자주 묻는 질문**](#자주-묻는-질문) · [**기여하기**](CONTRIBUTING.ko.md)
+[**다운로드**](#다운로드) · [**빠른 시작**](#빠른-시작) · [**기능**](#기능) · [**사용 설명서**](docs/guide.ko.md) · [**자주 묻는 질문**](#자주-묻는-질문) · [**기여하기**](CONTRIBUTING.ko.md)
 
 </div>
 
@@ -96,6 +96,8 @@ tar -xzf MyDB-IDE-*-linux-*.tar.gz
 3. **쿼리**: 새 데이터 소스의 콘솔이 열립니다. 쿼리를 입력하고 <kbd>⌘</kbd> <kbd>↵</kbd>를 누르면 아래에 결과가 나옵니다.
 4. **데이터 편집**: 테이블을 고르고 <kbd>⌘</kbd> <kbd>↓</kbd>. 셀을 고치고 행을 추가·삭제한 뒤 <kbd>⌘</kbd> <kbd>↵</kbd>로 제출합니다.
 5. **더 해 보기**: <kbd>⌘</kbd> <kbd>N</kbd>은 테이블 만들기, 스키마 두 개를 고르고 <kbd>⌘</kbd> <kbd>D</kbd>는 비교, <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>U</kbd>는 ER 다이어그램입니다.
+
+SSH 터널, 트랜잭션, 스키마 비교, 가져오기·내보내기 등은 **[사용 설명서](docs/guide.ko.md)**를 보세요.
 
 다른 IDE 프로젝트에 데이터 소스가 있다면, 탐색기 툴바의 **Import Data Sources from IDE Project…**로 SSH 설정까지 함께 가져올 수 있습니다.
 
