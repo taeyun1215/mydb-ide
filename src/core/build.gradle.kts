@@ -15,7 +15,7 @@ kotlin {
 
 dependencies {
     // provided by the IDE platform at runtime (versions pinned to the 262 platform)
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib:2.4.21")
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0")
     implementation("org.postgresql:postgresql:42.7.14")
     implementation("org.xerial:sqlite-jdbc:3.50.3.0")
@@ -23,7 +23,7 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.5.1")
     implementation("com.hierynomus:sshj:0.38.0")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.21")
     testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0")
     testImplementation(kotlin("test"))
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
