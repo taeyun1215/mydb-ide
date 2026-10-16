@@ -21,7 +21,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.50.3.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.10")
     implementation("org.apache.poi:poi-ooxml:5.5.1")
-    implementation("com.hierynomus:sshj:0.38.0")
+    implementation("com.hierynomus:sshj:0.41.2")
 
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0")
