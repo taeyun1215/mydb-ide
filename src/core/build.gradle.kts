@@ -18,7 +18,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0")
     implementation("org.postgresql:postgresql:42.7.14")
-    implementation("org.xerial:sqlite-jdbc:3.50.3.0")
+    implementation("org.xerial:sqlite-jdbc:3.53.4.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.10")
     implementation("org.apache.poi:poi-ooxml:5.5.1")
     implementation("com.hierynomus:sshj:0.38.0")
