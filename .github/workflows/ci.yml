@@ -26,7 +26,7 @@ jobs:
         run: src/scripts-test.sh
       - name: Upload test reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: core-test-reports
           path: src/core/build/reports/tests/
@@ -46,7 +46,7 @@ jobs:
         run: xvfb-run --auto-servernum src/plugin-test.sh
       - name: Upload test reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: plugin-test-reports
           path: src/plugin/build/reports/tests/
