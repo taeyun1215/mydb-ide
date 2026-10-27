@@ -83,12 +83,37 @@ class TableDataEditor(private val project: Project, private val file: TableDataF
     var grid: DataGrid? = null
         private set
 
+    /** Spinner over the grid while a page is being fetched; the previous grid stays underneath. */
+    private val body = com.intellij.ui.components.JBLoadingPanel(BorderLayout(), this, 150)
+    /** Last load failure, shown under the filter bar until the next load. */
+    private val errorLabel = JBLabel(AllIcons.General.Error).apply {
+        border = JBUI.Borders.empty(4, 8)
+        foreground = com.intellij.ui.JBColor.RED
+        horizontalAlignment = javax.swing.SwingConstants.LEFT
+        isVisible = false
+    }
+    /** Small spinner next to the filter fields, where the eye is after pressing Enter. */
+    private val busy = com.intellij.util.ui.AsyncProcessIcon("mydb-table-load").apply {
+        border = JBUI.Borders.emptyLeft(6)
+        isVisible = false
+        Disposer.register(this@TableDataEditor, this)
+    }
+    private var generation = 0
+    private var ticker: javax.swing.Timer? = null
+    /** A load is in flight; the spinner itself appears only after a short delay, so fast queries don't flicker. */
+    internal var isLoading = false
+        private set
+    internal val spinnerVisible get() = body.isLoading
+    internal val error: String? get() = errorLabel.text.takeIf { errorLabel.isVisible }
+
     init {
         val bar = JPanel(GridLayout(1, 2, JBUI.scale(8), 0))
         bar.add(JPanel(BorderLayout()).apply { add(JBLabel(AllIcons.General.Filter), BorderLayout.WEST); add(where) })
         bar.add(JPanel(BorderLayout()).apply { add(JBLabel(AllIcons.ObjectBrowser.Sorted), BorderLayout.WEST); add(orderBy) })
         bar.border = JBUI.Borders.empty(2, 4)
-        panel.add(bar, BorderLayout.NORTH)
+        val filters = JPanel(BorderLayout()).apply { add(bar); add(busy, BorderLayout.EAST) }
+        panel.add(JPanel(BorderLayout()).apply { add(filters, BorderLayout.NORTH); add(errorLabel, BorderLayout.SOUTH) }, BorderLayout.NORTH)
+        panel.add(body, BorderLayout.CENTER)
         val reload = { load() }
         onEnter(where, reload)
         onEnter(orderBy, reload)
@@ -122,8 +147,31 @@ class TableDataEditor(private val project: Project, private val file: TableDataF
         return page
     }
 
+    /** Shows the spinner with the elapsed time; called on the EDT. */
+    private fun startLoading() {
+        val started = System.currentTimeMillis()
+        isLoading = true
+        errorLabel.isVisible = false
+        body.setLoadingText("Running query…")
+        body.startLoading()
+        busy.isVisible = true; busy.resume()
+        ticker?.stop()
+        ticker = javax.swing.Timer(1000) {
+            body.setLoadingText("Running query… ${(System.currentTimeMillis() - started) / 1000}s")
+        }.apply { start() }
+    }
+
+    private fun stopLoading() {
+        isLoading = false
+        ticker?.stop(); ticker = null
+        busy.suspend(); busy.isVisible = false
+        body.stopLoading()
+    }
+
     internal fun load() {
         val config = DataSourceStorage.getInstance(project).find(file.dataSourceId) ?: return
+        val current = ++generation
+        startLoading()
         ApplicationManager.getApplication().executeOnPooledThread {
             val result = runCatching {
                 val existed = ConsoleService.getInstance(project).existing(file.sessionKey) != null
@@ -132,16 +180,26 @@ class TableDataEditor(private val project: Project, private val file: TableDataF
                 h to fetch(h.session, 0, h.session.pageSize)
             }
             ApplicationManager.getApplication().invokeLater {
+                // A newer Enter superseded this load: its result would overwrite the newer filter.
+                if (current != generation) return@invokeLater
+                stopLoading()
                 result.onSuccess { (h, page) ->
                     val ctx = SqlDataSourceBinding.getInstance(project).context(file) ?: dev.teo.mydb.plugin.sql.SqlContext(config, null, file.database, file.schema)
                     val edit = ConsoleRunner.editTarget(project, ctx.copy(database = file.database), file.schema, file.table)
-                    grid?.let { panel.remove(dev.teo.mydb.plugin.grid.GridToolbar.component(it)); Disposer.dispose(it) }
+                    grid?.let { body.contentPanel.remove(dev.teo.mydb.plugin.grid.GridToolbar.component(it)); Disposer.dispose(it) }
                     val g = dev.teo.mydb.plugin.grid.GridFactory.create(project, h.session, page, query(), edit, this, counter(),
                         OutputLog.getInstance(project).gridLog(h.title), h.key)
                     grid = g
-                    panel.add(dev.teo.mydb.plugin.grid.GridToolbar.component(g), BorderLayout.CENTER)
+                    body.add(dev.teo.mydb.plugin.grid.GridToolbar.component(g), BorderLayout.CENTER)
                     panel.revalidate()
-                }.onFailure { OutputLog.getInstance(project).error(file.table, it.message ?: it.toString()) }
+                }.onFailure {
+                    val message = it.message ?: it.toString()
+                    OutputLog.getInstance(project).error(file.table, message)
+                    errorLabel.text = message.lineSequence().first()
+                    errorLabel.toolTipText = message
+                    errorLabel.isVisible = true
+                    panel.revalidate()
+                }
             }
         }
     }
@@ -155,5 +213,5 @@ class TableDataEditor(private val project: Project, private val file: TableDataF
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {}
     override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
     override fun getFile(): VirtualFile = file
-    override fun dispose() { grid?.let(Disposer::dispose) }
+    override fun dispose() { ticker?.stop(); grid?.let(Disposer::dispose) }
 }

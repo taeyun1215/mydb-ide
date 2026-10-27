@@ -78,6 +78,49 @@ class TableEditTest : MyDbTestCase() {
         assertEquals(3, (e.grid!!.getDataModel(DataAccessType.DATABASE_DATA).let { m -> m.getValueAt(ModelIndex.forRow(m, 0), ModelIndex.forColumn(m, 0)) } as Number).toInt())
     }
 
+    fun `test filter reload shows a spinner until the page arrives`() {
+        val grid = open(dataSource, "products")
+        val e = editor!!
+        e.where.text = "id <= 3 and (select true from pg_sleep(1))"
+        e.load()
+        assertTrue("loading while the query runs", e.isLoading)
+        waitFor("spinner visible") { e.spinnerVisible }
+        waitFor("filtered") { e.grid !== grid }
+        assertFalse(e.isLoading)
+        assertFalse(e.spinnerVisible)
+        assertNull(e.error)
+        assertEquals(3, e.grid!!.getDataModel(DataAccessType.DATABASE_DATA).rowCount)
+    }
+
+    fun `test failed filter shows the error and keeps the previous grid`() {
+        val grid = open(dataSource, "products")
+        val e = editor!!
+        e.where.text = "no_such_column = 1"
+        e.load()
+        waitFor("error shown") { e.error != null }
+        assertFalse(e.isLoading)
+        assertTrue(e.error!!, e.error!!.contains("no_such_column"))
+        assertSame(grid, e.grid)
+        e.where.text = "id <= 3"
+        e.load()
+        waitFor("recovered") { e.grid !== grid }
+        assertNull("error cleared by the next load", e.error)
+    }
+
+    fun `test a newer filter wins over a slower earlier one`() {
+        val grid = open(dataSource, "products")
+        val e = editor!!
+        e.where.text = "id <= 5 and (select true from pg_sleep(1))"
+        e.load()
+        e.where.text = "id <= 2"
+        e.load()
+        waitFor("newer filter applied") { e.grid !== grid && !e.isLoading }
+        // Let the slow first query finish; its result must be dropped.
+        Thread.sleep(1500)
+        com.intellij.testFramework.PlatformTestUtil.dispatchAllEventsInIdeEventQueue()
+        assertEquals(2, e.grid!!.getDataModel(DataAccessType.DATABASE_DATA).rowCount)
+    }
+
     fun `test edits stay local until submit, then commit and reload`() {
         val config = freshDataSource("edit-ds")
         val grid = open(config, "products")
