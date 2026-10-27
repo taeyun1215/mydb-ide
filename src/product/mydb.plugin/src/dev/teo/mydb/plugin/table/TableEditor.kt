@@ -84,7 +84,7 @@ class TableDataEditor(private val project: Project, private val file: TableDataF
         private set
 
     /** Spinner over the grid while a page is being fetched; the previous grid stays underneath. */
-    private val body = com.intellij.ui.components.JBLoadingPanel(BorderLayout(), this, 150)
+    private val body = com.intellij.ui.components.JBLoadingPanel(BorderLayout()) { content -> LoadingOverlay(content, this) }
     /** Last load failure, shown under the filter bar until the next load. */
     private val errorLabel = JBLabel(AllIcons.General.Error).apply {
         border = JBUI.Borders.empty(4, 8)
@@ -214,4 +214,38 @@ class TableDataEditor(private val project: Project, private val file: TableDataF
     override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
     override fun getFile(): VirtualFile = file
     override fun dispose() { ticker?.stop(); grid?.let(Disposer::dispose) }
+}
+
+/** Loading layer that dims the grid and shows the spinner and text on a card, so it reads over busy data. */
+private class LoadingOverlay(content: JPanel, parent: com.intellij.openapi.Disposable) :
+    com.intellij.openapi.ui.LoadingDecorator(content, parent, 150) {
+    init {
+        @Suppress("UseJBColor")
+        overlayBackground = com.intellij.ui.JBColor(java.awt.Color(255, 255, 255, 150), java.awt.Color(20, 20, 22, 170))
+    }
+
+    override fun customizeLoadingLayer(parent: JPanel, text: javax.swing.JLabel, icon: com.intellij.util.ui.AnimatedIcon):
+        com.intellij.ui.components.panels.NonOpaquePanel {
+        parent.layout = java.awt.GridBagLayout()
+        text.font = JBUI.Fonts.label().biggerOn(2f).asBold()
+        text.foreground = com.intellij.util.ui.UIUtil.getLabelForeground()
+        val card = object : JPanel(com.intellij.ui.components.panels.VerticalLayout(8, javax.swing.SwingConstants.CENTER)) {
+            override fun paintComponent(g: java.awt.Graphics) {
+                val g2 = g.create() as java.awt.Graphics2D
+                try {
+                    g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
+                    val arc = JBUI.scale(16)
+                    g2.color = com.intellij.ui.JBColor.PanelBackground
+                    g2.fillRoundRect(0, 0, width - 1, height - 1, arc, arc)
+                    g2.color = com.intellij.ui.JBColor.border()
+                    g2.drawRoundRect(0, 0, width - 1, height - 1, arc, arc)
+                } finally { g2.dispose() }
+            }
+        }.apply {
+            isOpaque = false
+            border = JBUI.Borders.empty(18, 28)
+            add(icon); add(text)
+        }
+        return com.intellij.ui.components.panels.NonOpaquePanel(card).also { parent.add(it) }
+    }
 }
