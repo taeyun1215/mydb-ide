@@ -5,6 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2026.2.4] - 2026-10-28
+
+### Added
+
+- **Table editor**: while a `WHERE` / `ORDER BY` filter reloads, the grid dims and a card with a spinner and the elapsed time (`Running query… 3s`) appears; a small spinner also shows next to the filter fields
+
+### Changed
+
+- **Table editor**: a failed filter keeps the previous rows and shows the first line of the error under the filter bar (full message in the tooltip and in the Output log), instead of replacing the grid
+- **Table editor**: when filters are applied quickly one after another, only the result of the latest one is shown
+
 ## [2026.2.3] - 2026-10-16
 
 First public release.
@@ -21,5 +32,6 @@ First public release.
 - **Connectivity**: SSH tunnels with password or key, shared SSH configurations, SSL up to `verify-full` with client certificates, driver properties, read-only data sources, import of data sources from another IDE project
 - **Privacy**: no telemetry, error uploads, update checks, plugin marketplace or account sync
 
-[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.3...HEAD
+[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.4...HEAD
+[2026.2.4]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.3...v2026.2.4
 [2026.2.3]: https://github.com/taeyun1215/mydb-ide/releases/tag/v2026.2.3

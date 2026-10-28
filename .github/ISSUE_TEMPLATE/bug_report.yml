@@ -11,7 +11,7 @@ body:
     attributes:
       label: MyDB IDE version
       description: "About window → Copy and Close, then paste the first line"
-      placeholder: "MyDB IDE 2026.2.3, Build #MD-262.10968"
+      placeholder: "MyDB IDE 2026.2.4, Build #MD-262.10968"
     validations:
       required: true
   - type: dropdown
