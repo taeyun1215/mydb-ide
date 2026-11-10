@@ -83,6 +83,24 @@ object ConsoleRunner {
         }.queue()
     }
 
+    /**
+     * Makes the session use the console schema, so unqualified names run against the schema they resolve
+     * in. Sent only for an explicitly chosen schema, and only when it changed; returns the error.
+     */
+    private fun applySchema(project: Project, file: VirtualFile, ctx: SqlContext, handle: SessionHandle): String? {
+        val schema = SqlDataSourceBinding.getInstance(project).explicitSchema(file) ?: return null
+        if (schema == handle.appliedSchema) return null
+        val sql = when (ctx.config.dbms) {
+            dev.teo.mydb.core.datasource.Dbms.POSTGRES -> "set search_path to " + dev.teo.mydb.core.exec.SqlDialect.POSTGRES.quote(schema)
+            dev.teo.mydb.core.datasource.Dbms.MYSQL -> "use " + dev.teo.mydb.core.exec.SqlDialect.MYSQL.quote(schema)
+            else -> return null
+        }
+        return when (val r = handle.session.execute(sql)) {
+            is StatementResult.Error -> "Cannot switch to schema $schema: ${r.message}"
+            else -> { handle.appliedSchema = schema; null }
+        }
+    }
+
     /** Asks before DELETE / UPDATE without WHERE when the setting is on; true to go on. */
     var confirmHook: ((List<String>) -> Boolean)? = null
 
@@ -121,6 +139,10 @@ object ConsoleRunner {
         } catch (e: Exception) {
             log.error(title, "Connection failed: ${e.message}")
             return null
+        }
+        applySchema(project, file, ctx, handle)?.let { err ->
+            log.error(title, err)
+            return RunOutcome(handle, emptyList(), 0, err)
         }
         val results = mutableListOf<ResultTab>()
         var tabNo = 1

@@ -113,7 +113,7 @@ class JumpToConsoleAction : DumbAwareAction() {
     override fun update(e: AnActionEvent) { e.presentation.isEnabledAndVisible = e.single()?.let { dev.teo.mydb.plugin.util.Dialects.hasConnection(it.config) } == true }
     override fun actionPerformed(e: AnActionEvent) {
         val n = e.single() ?: return
-        ConsoleService.getInstance(e.project ?: return).openConsole(n.config)
+        ConsoleService.getInstance(e.project ?: return).openConsole(n.config, schema = n.schemaName())
     }
 }
 

@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap
 /** A live JDBC session owned by a console or a table editor. */
 class SessionHandle(val key: String, val title: String, val dataSource: DataSourceConfig, val session: Session) {
     @Volatile var lastMillis: Long? = null
+    /** Console schema last applied to this session (search_path / USE), so it is sent only when it changes. */
+    @Volatile var appliedSchema: String? = null
 }
 
 /** Transaction mode and isolation chosen in a console's Tx dropdown. */
@@ -49,15 +51,20 @@ class ConsoleService(private val project: Project) : Disposable {
 
     fun consoleDir(dataSourceId: String): Path = PathManager.getConfigDir().resolve("mydb/consoles/db/$dataSourceId")
 
-    /** Opens (creating if needed) the default console of a data source. */
-    fun openConsole(config: DataSourceConfig, newConsole: Boolean = false): VirtualFile {
+    /**
+     * Opens (creating if needed) the default console of a data source. Opened on a schema
+     * (explorer schema or object node), the console uses it for unqualified names and as search_path;
+     * without one, a reopened console keeps the schema it had.
+     */
+    fun openConsole(config: DataSourceConfig, newConsole: Boolean = false, schema: String? = null): VirtualFile {
         val dir = consoleDir(config.id)
         Files.createDirectories(dir)
         val name = if (newConsole) nextName(dir) else "console.sql"
         val path = dir.resolve(name)
         if (!Files.exists(path)) Files.writeString(path, "")
         val vf = WriteAction.computeAndWait<VirtualFile, RuntimeException> { LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)!! }
-        SqlDataSourceBinding.getInstance(project).bind(vf, config.id)
+        val binding = SqlDataSourceBinding.getInstance(project)
+        binding.bind(vf, config.id, schema ?: binding.explicitSchema(vf))
         FileEditorManager.getInstance(project).openFile(vf, true)
         return vf
     }

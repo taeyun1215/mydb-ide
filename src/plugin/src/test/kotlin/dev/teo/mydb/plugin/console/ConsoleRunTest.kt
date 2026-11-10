@@ -68,6 +68,34 @@ class ConsoleRunTest : MyDbTestCase() {
         assertTrue(log.toString(), log.any { it.startsWith("Fetched 20 rows") })
     }
 
+    fun `test unqualified names run in the console schema`() {
+        // the console is bound to shop; the server's own search_path (public) does not contain it
+        val outcome = run("select count(*) as n from orders")
+        assertNull(outcome.error)
+        assertEquals("shop", outcome.handle.appliedSchema)
+    }
+
+    fun `test console opened on a schema resolves in it and keeps it when reopened`() {
+        val dir = ConsoleService.getInstance(project).consoleDir(dataSource.id)
+        java.nio.file.Files.createDirectories(dir)
+        com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowRootAccess(testRootDisposable, dir.toString(), dir.toRealPath().toString())
+        val consoles = ConsoleService.getInstance(project)
+        val binding = SqlDataSourceBinding.getInstance(project)
+        val vf = consoles.openConsole(dataSource, schema = "shop")
+        try {
+            assertEquals("shop", binding.context(vf)!!.schema)
+            consoles.openConsole(dataSource) // again from the data source node
+            assertEquals("shop", binding.explicitSchema(vf))
+            myFixture.configureFromExistingVirtualFile(vf)
+            com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(project) { myFixture.editor.document.setText("select name from customers") }
+            val errors = myFixture.doHighlighting().filter { it.severity == com.intellij.lang.annotation.HighlightSeverity.ERROR }.map { it.text }
+            assertEquals(emptyList<String>(), errors)
+        } finally {
+            com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(project) { myFixture.editor.document.setText("") }
+            com.intellij.openapi.fileEditor.FileEditorManager.getInstance(project).closeFile(vf)
+        }
+    }
+
     fun `test running the script gives one tab per result set`() {
         val outcome = run("select id from shop.customers order by id limit 3;\nselect count(*) as n from shop.orders;")
         assertEquals(2, outcome.executed)

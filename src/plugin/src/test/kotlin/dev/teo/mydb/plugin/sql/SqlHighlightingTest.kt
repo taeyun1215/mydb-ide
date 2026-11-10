@@ -26,6 +26,8 @@ class SqlHighlightingTest : MyDbTestCase() {
             "select case when price > 10 then 'x' else 'y' end, cast(price as text), price::numeric(10, 2), now() - interval '1 day' from shop.products",
             "explain (format json) select 1",
             "select count(*) filter (where status = 'paid') over (partition by customer_id) from shop.orders",
+            "select o.*, c.name from shop.orders o left join shop.customers c on c.id = o.customer_id order by o.id desc",
+            "select shop.orders.* from shop.orders",
         )
         for (q in queries) {
             val file = sql(q)

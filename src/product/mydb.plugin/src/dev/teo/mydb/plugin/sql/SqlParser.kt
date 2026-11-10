@@ -403,7 +403,8 @@ private class Grammar(private val b: PsiBuilder) {
     private fun qualifiedName(): Boolean {
         if (!atIdent()) return false
         b.advanceLexer()
-        while (at(T.DOT)) {
+        // stop before `.*` so the caller can consume `alias.*` as a whole
+        while (at(T.DOT) && b.lookAhead(1) != T.ASTERISK) {
             b.advanceLexer()
             if (atIdent() || b.tokenType in T.ALL_KEYWORDS) b.advanceLexer() else { b.error("Name expected"); break }
         }

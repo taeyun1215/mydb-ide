@@ -51,9 +51,20 @@ class SqlDataSourceBinding(private val project: Project) : PersistentStateCompon
         if (schema != null) state.schemas[file.url] = schema else state.schemas.remove(file.url)
         file.putUserData(CONTEXT_STAMP, null)
         com.intellij.ui.EditorNotifications.getInstance(project).updateNotifications(file) // console toolbar
+        rehighlight(file)
     }
 
-    fun setSchema(file: VirtualFile, schema: String) { state.schemas[file.url] = schema }
+    fun setSchema(file: VirtualFile, schema: String) { state.schemas[file.url] = schema; rehighlight(file) }
+
+    /** Schema chosen for [file] (console opened on a schema, or picked), null when it follows the database default. */
+    fun explicitSchema(file: VirtualFile): String? = state.schemas[file.url]
+
+    /** Unqualified names resolve against the console schema: re-run highlighting of an open file after it changes. */
+    private fun rehighlight(file: VirtualFile) {
+        if (!file.isValid) return
+        com.intellij.psi.PsiManager.getInstance(project).findFile(file)
+            ?.let { com.intellij.codeInsight.daemon.DaemonCodeAnalyzer.getInstance(project).restart(it) }
+    }
 
     fun dataSourceId(file: VirtualFile): String? = state.dataSources[file.url]
 

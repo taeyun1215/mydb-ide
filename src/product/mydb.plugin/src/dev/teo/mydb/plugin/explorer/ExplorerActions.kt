@@ -145,7 +145,7 @@ class OpenConsoleAction : ExplorerAction() {
     override fun update(e: AnActionEvent) { e.presentation.isEnabled = e.nodes().isNotEmpty() && e.nodes().all { dev.teo.mydb.plugin.util.Dialects.hasConnection(it.config) } }
     override fun actionPerformed(e: AnActionEvent) {
         val n = e.nodes().firstOrNull() ?: return
-        ConsoleService.getInstance(e.project ?: return).openConsole(n.config, newConsole = false)
+        ConsoleService.getInstance(e.project ?: return).openConsole(n.config, newConsole = false, schema = n.schemaName())
     }
 }
 
@@ -153,7 +153,7 @@ class NewConsoleAction : ExplorerAction() {
     override fun update(e: AnActionEvent) { e.presentation.isEnabled = e.nodes().isNotEmpty() && e.nodes().all { dev.teo.mydb.plugin.util.Dialects.hasConnection(it.config) } }
     override fun actionPerformed(e: AnActionEvent) {
         val n = e.nodes().firstOrNull() ?: return
-        ConsoleService.getInstance(e.project ?: return).openConsole(n.config, newConsole = true)
+        ConsoleService.getInstance(e.project ?: return).openConsole(n.config, newConsole = true, schema = n.schemaName())
     }
 }
 

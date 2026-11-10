@@ -4,6 +4,17 @@ import com.intellij.openapi.actionSystem.DataKey
 import dev.teo.mydb.core.datasource.DataSourceConfig
 import dev.teo.mydb.core.model.*
 
+/** Schema a node lives in (null above schema level): a console opened on it uses that schema. */
+fun ExplorerNode.schemaName(): String? = when (this) {
+    is ExplorerNode.Schema -> schema.name
+    is ExplorerNode.Folder -> schema
+    is ExplorerNode.Table -> schema
+    is ExplorerNode.Column -> schema
+    is ExplorerNode.Sequence -> schema
+    is ExplorerNode.Routine -> schema
+    else -> null
+}
+
 /** Tree node payloads of the database explorer. */
 sealed interface ExplorerNode {
     val config: DataSourceConfig
