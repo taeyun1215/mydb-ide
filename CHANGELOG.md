@@ -5,6 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2026.2.5] - 2026-11-10
+
+### Fixed
+
+- **SQL consoles**: `alias.*` in a select list (`select rd.*, lm.x from ...`) no longer shows "Name expected" / "Expression expected"
+- **SQL consoles**: a console opened on a schema in the explorer (or on a table, column or other object in it) resolves unqualified table names in that schema, instead of the database's default schema; reopening the console from the data source keeps the schema
+- **SQL consoles**: statements run in the console schema: the session's `search_path` (PostgreSQL) or `USE` (MySQL) is switched to it, so the editor and the database see the same tables
+
 ## [2026.2.4] - 2026-10-28
 
 ### Added
@@ -32,6 +40,7 @@ First public release.
 - **Connectivity**: SSH tunnels with password or key, shared SSH configurations, SSL up to `verify-full` with client certificates, driver properties, read-only data sources, import of data sources from another IDE project
 - **Privacy**: no telemetry, error uploads, update checks, plugin marketplace or account sync
 
-[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.4...HEAD
+[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.5...HEAD
+[2026.2.5]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.4...v2026.2.5
 [2026.2.4]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.3...v2026.2.4
 [2026.2.3]: https://github.com/taeyun1215/mydb-ide/releases/tag/v2026.2.3
