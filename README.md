@@ -60,9 +60,9 @@ Get the latest version from the [Releases page](https://github.com/taeyun1215/my
 
 | OS | Apple Silicon / ARM64 | Intel / x64 |
 |---|---|---|
-| **macOS** 12+ | [`macos-arm64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-macos-arm64.dmg) | [`macos-x64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-macos-x64.dmg) |
-| **Windows** 10+ | [`windows-arm64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-windows-arm64.exe) | [`windows-x64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-windows-x64.exe) |
-| **Linux** | [`linux-arm64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-linux-arm64.tar.gz) | [`linux-x64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-linux-x64.tar.gz) |
+| **macOS** 12+ | [`macos-arm64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.7-macos-arm64.dmg) | [`macos-x64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.7-macos-x64.dmg) |
+| **Windows** 10+ | [`windows-arm64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.7-windows-arm64.exe) | [`windows-x64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.7-windows-x64.exe) |
+| **Linux** | [`linux-arm64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.7-linux-arm64.tar.gz) | [`linux-x64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.7-linux-x64.tar.gz) |
 
 Each release lists the SHA-256 checksum of every file in `SHA256SUMS.txt`.
 

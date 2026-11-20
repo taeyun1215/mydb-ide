@@ -5,6 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2026.2.7] - 2026-11-20
+
+### Fixed
+
+- **SQL consoles**: DDL (`CREATE` / `ALTER` / `DROP` / `RENAME` / `COMMENT ON`) run from a console or an SQL script refreshes the metadata of the schemas it touched, so a column just added (`ALTER TABLE maum.staff ADD COLUMN password …`) no longer shows as "Unknown column" in the next statement; in a PostgreSQL manual transaction the refresh waits for the commit
+- **SQL consoles**: MySQL `UPDATE … JOIN … ON … SET` without `WHERE` is no longer reported as changing every row (the inner join limits the rows); `LEFT JOIN`, comma joins and PostgreSQL `UPDATE … FROM` still warn
+
+### Changed
+
+- **Settings**: "Refresh metadata after running DDL" (Database → Other) now also covers consoles and SQL scripts
+
 ## [2026.2.6] - 2026-11-20
 
 ### Fixed
@@ -48,7 +59,8 @@ First public release.
 - **Connectivity**: SSH tunnels with password or key, shared SSH configurations, SSL up to `verify-full` with client certificates, driver properties, read-only data sources, import of data sources from another IDE project
 - **Privacy**: no telemetry, error uploads, update checks, plugin marketplace or account sync
 
-[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.6...HEAD
+[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.7...HEAD
+[2026.2.7]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.6...v2026.2.7
 [2026.2.6]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.5...v2026.2.6
 [2026.2.5]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.4...v2026.2.5
 [2026.2.4]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.3...v2026.2.4
