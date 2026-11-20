@@ -60,9 +60,9 @@
 
 | OS | Apple Silicon / ARM64 | Intel / x64 |
 |---|---|---|
-| **macOS** 12+ | [`macos-arm64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.5-macos-arm64.dmg) | [`macos-x64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.5-macos-x64.dmg) |
-| **Windows** 10+ | [`windows-arm64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.5-windows-arm64.exe) | [`windows-x64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.5-windows-x64.exe) |
-| **Linux** | [`linux-arm64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.5-linux-arm64.tar.gz) | [`linux-x64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.5-linux-x64.tar.gz) |
+| **macOS** 12+ | [`macos-arm64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-macos-arm64.dmg) | [`macos-x64.dmg`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-macos-x64.dmg) |
+| **Windows** 10+ | [`windows-arm64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-windows-arm64.exe) | [`windows-x64.exe`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-windows-x64.exe) |
+| **Linux** | [`linux-arm64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-linux-arm64.tar.gz) | [`linux-x64.tar.gz`](https://github.com/taeyun1215/mydb-ide/releases/latest/download/MyDB-IDE-2026.2.6-linux-x64.tar.gz) |
 
 릴리스마다 모든 파일의 SHA-256 체크섬이 `SHA256SUMS.txt`에 있습니다.
 

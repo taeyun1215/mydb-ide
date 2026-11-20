@@ -5,6 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2026.2.6] - 2026-11-20
+
+### Fixed
+
+- **SQL consoles**: MySQL multi-table `UPDATE` (`UPDATE staff s JOIN user u ON u.uuid = s.user_id SET s.email = u.email`, or `UPDATE t a, u b SET …`) no longer shows "SET expected" / "Unexpected tokens"; the joined tables resolve and complete
+- **SQL consoles**: a qualified `SET` target (`SET u.password = …`) is checked against the table with that alias instead of always the first table
+- **SQL consoles**: single-table `UPDATE … ORDER BY … LIMIT n` (MySQL) parses
+
 ## [2026.2.5] - 2026-11-10
 
 ### Fixed
@@ -40,7 +48,8 @@ First public release.
 - **Connectivity**: SSH tunnels with password or key, shared SSH configurations, SSL up to `verify-full` with client certificates, driver properties, read-only data sources, import of data sources from another IDE project
 - **Privacy**: no telemetry, error uploads, update checks, plugin marketplace or account sync
 
-[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.5...HEAD
+[Unreleased]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.6...HEAD
+[2026.2.6]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.5...v2026.2.6
 [2026.2.5]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.4...v2026.2.5
 [2026.2.4]: https://github.com/taeyun1215/mydb-ide/compare/v2026.2.3...v2026.2.4
 [2026.2.3]: https://github.com/taeyun1215/mydb-ide/releases/tag/v2026.2.3
