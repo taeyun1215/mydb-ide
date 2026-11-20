@@ -128,6 +128,11 @@ private class Grammar(private val b: PsiBuilder) {
 
     private fun fromItemWithJoins() {
         fromItem()
+        joins()
+    }
+
+    /** `JOIN …` items after a FROM item (also after the target of a MySQL multi-table UPDATE). */
+    private fun joins() {
         while (atJoin()) {
             val j = b.mark()
             eatKw("natural")
@@ -226,6 +231,11 @@ private class Grammar(private val b: PsiBuilder) {
     private fun update() {
         expectKw("update"); eatKw("only")
         tableRef(); tableAlias()
+        // MySQL multi-table UPDATE: `UPDATE t a JOIN u b ON … SET …` or `UPDATE t a, u b SET …`
+        if (atJoin() || at(T.COMMA)) clause(E.FROM_CLAUSE) {
+            joins()
+            while (eat(T.COMMA)) fromItemWithJoins()
+        }
         clause(E.SET_CLAUSE) {
             expectKw("set")
             do {
@@ -236,6 +246,8 @@ private class Grammar(private val b: PsiBuilder) {
         }
         if (atKw("from")) fromClause()
         if (atKw("where")) clause(E.WHERE_CLAUSE) { b.advanceLexer(); expression() }
+        if (atKw("order")) orderBy() // MySQL single-table UPDATE … ORDER BY … LIMIT n
+        limit()
         returning()
     }
 

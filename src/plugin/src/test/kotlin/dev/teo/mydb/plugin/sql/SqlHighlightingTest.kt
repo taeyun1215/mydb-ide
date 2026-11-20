@@ -28,6 +28,9 @@ class SqlHighlightingTest : MyDbTestCase() {
             "select count(*) filter (where status = 'paid') over (partition by customer_id) from shop.orders",
             "select o.*, c.name from shop.orders o left join shop.customers c on c.id = o.customer_id order by o.id desc",
             "select shop.orders.* from shop.orders",
+            "update shop.orders o join shop.customers c on c.id = o.customer_id set o.status = c.name where c.id = 1",
+            "update shop.orders o, shop.customers c set o.status = c.name where c.id = o.customer_id",
+            "update shop.orders set status = 'x' where id > 10 order by id limit 5",
         )
         for (q in queries) {
             val file = sql(q)
@@ -102,6 +105,12 @@ class SqlHighlightingTest : MyDbTestCase() {
         assertEquals(emptyList<Pair<String, String>>(), errors())
         sql("select name from customers") // default schema public: not found
         assertEquals(listOf("customers"), errors().map { it.first })
+    }
+
+    fun testMultiTableUpdateResolvesJoinedTablesAndSetTargets() {
+        // MySQL multi-table UPDATE: SET targets belong to the table their qualifier names
+        sql("update shop.orders o join shop.customers c on c.id = o.customer_id set c.name = o.status, o.statsu = c.nmae where c.id = 1")
+        assertEquals(setOf("statsu", "nmae"), errors().map { it.first }.toSet())
     }
 
     fun testInsertAndUpdateTargetsResolve() {

@@ -140,9 +140,17 @@ object SqlResolve {
         }
     }
 
-    /** Target table of INSERT column lists and UPDATE SET targets. */
+    /**
+     * Target table of INSERT column lists and UPDATE SET targets. A qualified SET target (`SET u.x = …`
+     * in a MySQL multi-table UPDATE) belongs to the table with that alias or name.
+     */
     fun dmlTarget(e: PsiElement): FromSource.Table? {
         val stmt = PsiTreeUtil.getParentOfType(e, SqlStatement::class.java) ?: return null
+        val col = e as? SqlColumnRef
+        if (col != null && col.isSetTarget && col.isQualified) {
+            val q = col.segments[col.segments.size - 2].name
+            sourcesOfDml(stmt).firstOrNull { it.visibleName == q }?.let { return it as? FromSource.Table }
+        }
         val ref = stmt.node.findChildByType(E.TABLE_REF)?.psi as? SqlTableRef ?: return null
         return tableSource(ref) as? FromSource.Table
     }
