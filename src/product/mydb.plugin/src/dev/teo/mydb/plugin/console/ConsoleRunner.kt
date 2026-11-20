@@ -174,6 +174,7 @@ object ConsoleRunner {
             }
         }
         handle.lastMillis = System.currentTimeMillis() - runStarted
+        DdlRefresh.afterRun(project, ctx.config, handle, ctx.database, ctx.schema, runs.filter { it.ok }.map { it.statement.text })
         return RunOutcome(handle, results, executed, error, runs)
     }
 

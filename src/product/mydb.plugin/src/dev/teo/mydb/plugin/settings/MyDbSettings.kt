@@ -38,7 +38,7 @@ class MyDbSettings : PersistentStateComponent<MyDbSettings.Values> {
         var explorerDoubleClick: DoubleClickTarget = DoubleClickTarget.DATA
         /** Open the data source's console after creating it. */
         var openConsoleOnCreate: Boolean = true
-        /** Re-read the edited object after DDL from the object dialogs. */
+        /** Re-read the changed objects after DDL from the object dialogs, consoles and scripts. */
         var refreshAfterDdl: Boolean = true
         /** Paths of the PostgreSQL client tools last used for dump and restore. */
         var pgDumpPath: String = ""
@@ -115,7 +115,7 @@ class OtherConfigurable : BoundSearchableConfigurable("Other", "mydb.database.ot
     override fun createPanel(): DialogPanel {
         val s = MyDbSettings.get()
         return panel {
-            row { checkBox("Refresh the object after running DDL from create and modify dialogs").bindSelected(s::refreshAfterDdl) }
+            row { checkBox("Refresh metadata after running DDL (consoles, scripts, create and modify dialogs)").bindSelected(s::refreshAfterDdl) }
         }
     }
 }

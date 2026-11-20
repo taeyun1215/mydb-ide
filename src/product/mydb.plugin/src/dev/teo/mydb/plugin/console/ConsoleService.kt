@@ -28,6 +28,8 @@ class SessionHandle(val key: String, val title: String, val dataSource: DataSour
     @Volatile var lastMillis: Long? = null
     /** Console schema last applied to this session (search_path / USE), so it is sent only when it changes. */
     @Volatile var appliedSchema: String? = null
+    /** Schemas changed by DDL inside the open transaction, introspected again once it commits. */
+    val pendingRefresh: MutableSet<dev.teo.mydb.core.introspect.RefreshTarget> = ConcurrentHashMap.newKeySet()
 }
 
 /** Transaction mode and isolation chosen in a console's Tx dropdown. */
@@ -106,7 +108,13 @@ class ConsoleService(private val project: Project) : Disposable {
             })
             if (tx.isolation != dev.teo.mydb.core.datasource.IsolationLevel.DATABASE_DEFAULT) s.isolation = tx.isolation
             s.pageSize = dev.teo.mydb.plugin.settings.MyDbSettings.get().pageSize
-            SessionHandle(key, title, config, s).also { sessions[key] = it; publish() }
+            SessionHandle(key, title, config, s).also { h ->
+                s.addListener(object : SessionListener {
+                    override fun transactionEnded(committed: Boolean) = DdlRefresh.transactionEnded(project, h, committed)
+                })
+                sessions[key] = h
+                publish()
+            }
         }
 
     fun existing(key: String): SessionHandle? = sessions[key]

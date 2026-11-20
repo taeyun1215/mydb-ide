@@ -68,10 +68,15 @@ class ModelService(private val project: Project) : Disposable {
         return model
     }
 
-    fun refresh(config: DataSourceConfig, target: RefreshTarget = RefreshTarget.All, onDone: (DbModel) -> Unit = {}) {
+    fun refresh(config: DataSourceConfig, target: RefreshTarget = RefreshTarget.All, onDone: (DbModel) -> Unit = {}) =
+        refresh(config, listOf(target), onDone)
+
+    /** Background refresh of several targets in turn (a whole-source refresh covers the others). */
+    fun refresh(config: DataSourceConfig, targets: List<RefreshTarget>, onDone: (DbModel) -> Unit = {}) {
+        val todo = if (RefreshTarget.All in targets) listOf(RefreshTarget.All) else targets.distinct()
         object : Task.Backgroundable(project, MyDbBundle.message("introspection.progress", config.name), true) {
             private var result: DbModel? = null
-            override fun run(indicator: ProgressIndicator) { result = refreshNow(config, target) }
+            override fun run(indicator: ProgressIndicator) { todo.forEach { indicator.checkCanceled(); result = refreshNow(config, it) } }
             override fun onSuccess() { result?.let(onDone) }
             override fun onThrowable(error: Throwable) {
                 NotificationGroupManager.getInstance().getNotificationGroup("MyDB")

@@ -16,10 +16,23 @@ class SqlMissingWhereInspection : LocalInspectionTool(), com.intellij.openapi.pr
             if (element !is SqlStatement) return
             if (element.kind != E.DELETE_STATEMENT && element.kind != E.UPDATE_STATEMENT) return
             if (element.node.findChildByType(E.WHERE_CLAUSE) != null) return
+            if (element.kind == E.UPDATE_STATEMENT && joinLimitsTarget(element)) return
             val anchor = element.firstChild ?: return
             holder.registerProblem(anchor, MyDbBundle.message("inspection.missing.where", anchor.text.uppercase()))
         }
     }
+}
+
+/**
+ * MySQL `update t a join u b on … set …`: an inner join before SET limits the updated rows. Joins in a
+ * PostgreSQL `update … set … from` do not: every row of the target still matches.
+ */
+private fun joinLimitsTarget(stmt: SqlStatement): Boolean {
+    val set = stmt.node.findChildByType(E.SET_CLAUSE) ?: return false
+    val from = stmt.node.findChildByType(E.FROM_CLAUSE)?.takeIf { it.startOffset < set.startOffset } ?: return false
+    val words = com.intellij.psi.util.PsiTreeUtil.collectElements(from.psi) { it.firstChild == null }
+        .map { it.text.lowercase() }.filter { w -> w.isNotBlank() && w.all { it.isLetter() } }
+    return dev.teo.mydb.core.exec.UnsafeStatements.innerJoinOn(words)
 }
 
 /**

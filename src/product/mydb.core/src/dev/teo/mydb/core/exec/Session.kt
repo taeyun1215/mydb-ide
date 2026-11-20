@@ -47,6 +47,8 @@ sealed interface StatementResult {
 interface SessionListener {
     fun transactionStateChanged(open: Boolean) {}
     fun message(text: String) {}
+    /** The open transaction ended: [committed] is false after a rollback. */
+    fun transactionEnded(committed: Boolean) {}
 }
 
 /**
@@ -113,12 +115,14 @@ class Session(val connection: Connection, txMode: TxMode = TxMode.AUTO) : AutoCl
         connection.commit()
         transactionOpen = false
         notify { message("Transaction committed") }
+        notify { transactionEnded(true) }
     }
 
     fun rollback() {
         connection.rollback()
         transactionOpen = false
         notify { message("Transaction rolled back") }
+        notify { transactionEnded(false) }
     }
 
     /** Runs [block] atomically: inside the open transaction in manual mode, or in its own one in auto mode. */

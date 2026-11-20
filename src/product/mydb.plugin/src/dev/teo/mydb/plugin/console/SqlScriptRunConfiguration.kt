@@ -34,6 +34,7 @@ import dev.teo.mydb.core.exec.Session
 import dev.teo.mydb.core.exec.StatementResult
 import dev.teo.mydb.core.exec.StatementSplitter
 import dev.teo.mydb.plugin.datasource.DataSourceStorage
+import dev.teo.mydb.plugin.model.ModelService
 import dev.teo.mydb.plugin.datasource.DbConnector
 import dev.teo.mydb.plugin.sql.SqlDataSourceBinding
 import dev.teo.mydb.plugin.sql.SqlFileType
@@ -116,6 +117,7 @@ class SqlScriptProcess(private val project: Project, private val dataSourceId: S
                     if (schema != null && config.dbms == dev.teo.mydb.core.datasource.Dbms.POSTGRES)
                         s.execute("set search_path to " + dev.teo.mydb.core.exec.SqlDialect.POSTGRES.quote(schema))
                     if (schema != null && config.dbms == dev.teo.mydb.core.datasource.Dbms.MYSQL) s.execute("use " + dev.teo.mydb.core.exec.SqlDialect.MYSQL.quote(schema))
+                    val done = mutableListOf<String>()
                     for (st in StatementSplitter.split(Files.readString(script))) {
                         if (isProcessTerminating || isProcessTerminated) { code = 1; break }
                         out("> ${st.text.replace(Regex("\\s+"), " ")}\n")
@@ -124,7 +126,11 @@ class SqlScriptProcess(private val project: Project, private val dataSourceId: S
                             is StatementResult.Update -> out("  ${r.count} row(s) affected in ${r.millis} ms\n")
                             is StatementResult.Error -> { out("  [${r.sqlState ?: ""}] ${r.message}\n", error = true); code = 1; break }
                         }
+                        done += st.text
                     }
+                    // the script's DDL is committed (auto-commit session): refresh what it changed
+                    val db = ModelService.getInstance(project).rawModel(config.id)?.let { m -> m.databases.firstOrNull { it.isDefault } ?: m.databases.firstOrNull() }
+                    DdlRefresh.afterRun(project, config, null, db?.name ?: "", schema ?: db?.schemas?.firstOrNull { it.isDefault }?.name, done)
                 }
             } catch (e: Exception) {
                 out("${e.message ?: e}\n", error = true); code = 1

@@ -11,7 +11,17 @@ object UnsafeStatements {
         // `with … delete …` keeps the check on the main statement
         val main = if (first == "with") words.firstOrNull { it == "delete" || it == "update" } ?: return false else first
         if (main != "delete" && main != "update") return false
-        return "where" !in words.dropWhile { it != main }
+        val body = words.dropWhile { it != main }
+        if ("where" in body) return false
+        // MySQL `update t a join u b on … set …`: the inner join limits the rows of t
+        return !(main == "update" && innerJoinOn(body.takeWhile { it != "set" }))
+    }
+
+    private val OUTER = setOf("left", "right", "full", "outer", "cross", "natural")
+
+    /** An inner join with an ON / USING condition among [words]. */
+    fun innerJoinOn(words: List<String>): Boolean = words.indices.any { k ->
+        words[k] == "join" && words.getOrNull(k - 1) !in OUTER && words.drop(k + 1).any { it == "on" || it == "using" }
     }
 
     /** Lower-case words outside quotes, comments and parentheses. */
